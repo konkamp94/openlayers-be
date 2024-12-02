@@ -178,7 +178,7 @@ export class LocationsService {
     async calculateRoute(body: CalculateRoute) {
         const openRouteServiceBaseUrl = this.configService.get('OPEN_ROUTE_SERVICE_BASE_URL');
         const openRouteServiceApiKey = this.configService.get('OPEN_ROUTE_SERVICE_API_KEY');
-        const response = await firstValueFrom(this.httpService.post(`${openRouteServiceBaseUrl}/v2/direct)ions/driving-car/geojson`,
+        const response = await firstValueFrom(this.httpService.post(`${openRouteServiceBaseUrl}/v2/directions/driving-car/geojson`,
             { coordinates: body.locations }, { headers: { 'Authorization': openRouteServiceApiKey } }
         ));
         return response.data;
