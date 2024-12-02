@@ -29,7 +29,7 @@ console.log(`Loading environment variables from: ${envFilePath}`);
         })
       },
     }),
-    LocationsModule,
+    LocationsModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,17 +1,23 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateUserLocationDto } from '../locations/dto/create-user-location.dto';
+import { HttpService } from '@nestjs/axios';
 import { UpdateUserLocationDto } from '../locations/dto/update-user-location.dto';
 import { UserLocation } from './entities/user-location.entity';
 import { DataSource, IsNull, Not, Repository, Transaction } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PredefinedLocation } from './entities/predefined-location.entity';
 import { ReorderUserLocationDto } from './dto/reorder-user-location.dto';
+import { ConfigService } from '@nestjs/config';
+import { CalculateRoute } from './dto/caclulate-route.dto';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class LocationsService {
 
     constructor(
         private readonly dataSource: DataSource,
+        private readonly httpService: HttpService,
+        private readonly configService: ConfigService,
         @InjectRepository(UserLocation) private userLocationRepository: Repository<UserLocation>,
         @InjectRepository(PredefinedLocation) private predefinedLocationRepository: Repository<PredefinedLocation>) { }
 
@@ -167,6 +173,15 @@ export class LocationsService {
             await transactionalEntityManager.save(userLocation);
         });
 
+    }
+
+    async calculateRoute(body: CalculateRoute) {
+        const openRouteServiceBaseUrl = this.configService.get('OPEN_ROUTE_SERVICE_BASE_URL');
+        const openRouteServiceApiKey = this.configService.get('OPEN_ROUTE_SERVICE_API_KEY');
+        const response = await firstValueFrom(this.httpService.post(`${openRouteServiceBaseUrl}/v2/direct)ions/driving-car/geojson`,
+            { coordinates: body.locations }, { headers: { 'Authorization': openRouteServiceApiKey } }
+        ));
+        return response.data;
     }
 }
 

@@ -3,6 +3,7 @@ import { LocationsService } from './locations.service';
 import { CreateUserLocationDto } from '../locations/dto/create-user-location.dto';
 import { UpdateUserLocationDto } from '../locations/dto/update-user-location.dto';
 import { ReorderUserLocationDto } from './dto/reorder-user-location.dto';
+import { CalculateRoute } from './dto/caclulate-route.dto';
 
 @Controller('locations')
 export class LocationsController {
@@ -33,6 +34,11 @@ export class LocationsController {
         return await this.locationService.updateUserLocation(+id, updateUserLocationDto);
     }
 
+    @Delete('user-location/:id')
+    async removeUserLocation(@Param('id') id: string) {
+        return await this.locationService.removeUserLocation(+id);
+    }
+
     @Post('user-location/re-order')
     async reOrderUserLocations(@Body() reorderUserLocation: ReorderUserLocationDto) {
         if (!reorderUserLocation.newPrevLocationId && !reorderUserLocation.newNextLocationId) {
@@ -42,8 +48,8 @@ export class LocationsController {
         return this.locationService.findAllUserLocations();
     }
 
-    @Delete('user-location/:id')
-    async removeUserLocation(@Param('id') id: string) {
-        return await this.locationService.removeUserLocation(+id);
+    @Post('/calculate-route')
+    async calculateRoute(@Body() body: CalculateRoute) {
+        return await this.locationService.calculateRoute(body);
     }
 }
