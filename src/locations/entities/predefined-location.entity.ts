@@ -11,7 +11,7 @@ export class PredefinedLocation {
     name: string;
 
     @Column({ type: 'geometry', spatialFeatureType: 'Point', srid: 4326 })
-    geom: Point; // (longitude, latitude)
+    coordinates: Point; // (longitude, latitude)
 
     @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
     createdAt: string;
