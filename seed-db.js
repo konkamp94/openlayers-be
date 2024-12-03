@@ -33,12 +33,11 @@ const parseCsvAndSaveLocation = () => {
       });
     })
     .on('end', async () => {
-      result.forEach(async (location) => {
-        await insertPredefinedLocations(location);
-      });
-    })
-    .on('close', () => {
-      console.log('CSV file successfully processed');
+      for (let i = 0; i < result.length; i++) {
+        await insertPredefinedLocations(result[i]);
+      }
+      console.log('Predefined Locations Data inserted successfully');
+      await client.end();
     });
 };
 
